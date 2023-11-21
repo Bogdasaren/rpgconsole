@@ -65,6 +65,52 @@ def meetShop():
         else:
             print("Я такое не продаю.")
         printParameters()
+
+def meetMonster():
+    global hp
+    global coins
+
+    monsterLvl = r.randint(1, 3)
+    monsterHp = monsterLvl * r.randint(1, 2)
+    monsterDmg = monsterLvl * 2 - 1
+    monsters = ["Giant Firefly", "Chimera", "Young Ciclop", "Giant Spider", "Lurker"]
+    monster = r.choice(monsters)
+
+    print("""Ох чёрт... Ты нарвался на монстра!
+    Враг --> {0} {1} уровня, у него {2} здоровья и {3} урона.""".format(monster, monsterLvl, monsterHp, monsterDmg))
+    printParameters()
+
+    while monsterHp > 0:
+        choice = input("""Что решаешь?
+        АТАКА/Тикаем -->""").lower()
+
+        if choice == "атака":
+            monsterHp -= damage
+            print("""Отличный удар!
+            У чудища осталось""", monsterHp, "жизней.")
+        elif choice == "тикаем":
+            chance = r.randint(0, monsterLvl)
+            if chance == 0:
+                print("Ты сбежал... Какой позор... Чтож, отделался лёгким испугом.")
+                break
+            else:
+                print("Кажется на завтрак эта тварь съела Усэйн Болта. Ты станешь отличным вторым блюдом...")
+
+        else:
+            continue
+
+        if monsterHp > 0:
+            hp -= monsterDmg
+            print("А он не промах! Атаковал тебя! Это было больно, у тебя", hp, "здоровья")
+
+        if hp <= 0:
+            break
+    else:
+        loot = r.randint(0,2) + monsterLvl
+        coins += loot
+        print("Ты завалил эту тварь! Заработал немного шекелей -->", loot)
+        printCoins()
+
 def initGame(initHp, initCoins, initDmg):
     global hp
     global coins
@@ -77,12 +123,13 @@ def initGame(initHp, initCoins, initDmg):
     print("Ты отправился в странствие навстречу приключениям и опасностям. Удачного путешествия!")
     printParameters()
 
+#Игровые события
 def gameLoop():
     situation = r.randint(0, 10)
     if situation == 0:
         meetShop()
     elif situation == 1:
-        input("Monster")
+        meetMonster()
     else:
         input("Блуждаю...")
 

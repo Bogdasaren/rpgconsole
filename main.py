@@ -70,9 +70,11 @@ def meetMonster():
     global hp
     global coins
 
-    monsterLvl = r.randint(1, 4 )
-    monsterHp = monsterLvl * damage * r.randint(1, 2) / 2
-    monsterDmg = monsterLvl * 2 * hp / 3
+    monsterLvl = r.randint(1, 4)
+    if monsterLvl < 1:
+        monsterLvl = 1
+    monsterHp = monsterLvl * r.randint(1, 2)
+    monsterDmg = monsterLvl * 2 - 1
     monsters = ["Giant Firefly", "Chimera", "Young Ciclop", "Giant Spider", "Lurker"]
     monster = r.choice(monsters)
 
@@ -89,7 +91,7 @@ def meetMonster():
             print("""Отличный удар!
             У чудища осталось""", monsterHp, "жизней.")
         elif choice == "тикаем":
-            chance = r.randint(0, monsterLvl)
+            chance = r.randint(0, 1)
             if chance == 0:
                 print("Ты сбежал... Какой позор... Чтож, отделался лёгким испугом.")
                 break
@@ -118,8 +120,10 @@ def meetBandit():
     global coins
 
     banditLvl = r.randint(1, 3)
-    banditHp = banditLvl * damage * r.randint(1, 2) / 2
-    banditDmg = banditLvl * 2 * hp / 3
+    if banditLvl < 1:
+        banditLvl = 1
+    banditHp = banditLvl * r.randint(1, 2)
+    banditDmg = banditLvl * 2 - 1
     bandits = ["Robber", "Forest Bandit", "Asassin", "Looter"]
     bandit = r.choice(bandits)
 
@@ -136,7 +140,7 @@ def meetBandit():
             print("""Отличный удар!
             У врага осталось""", banditHp, "жизней.")
         elif choice == "тикаем":
-            chance = r.randint(0, 2)
+            chance = r.randint(0, 1)
             if chance == 0:
                 print("Тебе удалось его оглушить! Ты скрылся в тени... Нужно перевести дух.")
                 break
@@ -183,6 +187,28 @@ def find_item():
     damage = damage + weaponDmg
     printParameters()
 
+def find_altar():
+    global hp
+
+    print("""На пути тебе попался каменный алтарь. Всё исписано древними рунами. Это язык древних народов, не прочесть.
+Кажется, раньше маги проводили здесь свои обряды. 
+В чаше алтаря налита какая-то жидкость. Стоит ли рисковать?""")
+
+    choice = input("""Что будешь делать?
+    Выпить/Уйти --> """).lower()
+
+    if choice == "выпить":
+        chance = r.randint(0, 2)
+        if chance == 0:
+            print("""Кажется делать этого не стоило. Что-то поплохело.""")
+            hp -= 2
+        else:
+            print("""Видимо это было мощное целебное зелье.
+            Ты чувствуешь себя гораздо лучше.""")
+            hp += r.randint(1, 3)
+            printParameters()
+
+
 def initGame(initHp, initCoins, initDmg):
     global hp
     global coins
@@ -206,6 +232,8 @@ def gameLoop():
         meetBandit()
     elif situation == 3:
         find_item()
+    elif situation == 4:
+        find_altar()
     else:
         input("Блуждаю...")
 

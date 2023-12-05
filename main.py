@@ -60,7 +60,7 @@ def meetShop():
                 printHp()
         elif choice == "3":
             if buy(weaponCost):
-                damage = weaponDmg
+                damage = damage + weaponDmg
                 printDamage()
         else:
             print("Я такое не продаю.")
@@ -70,9 +70,9 @@ def meetMonster():
     global hp
     global coins
 
-    monsterLvl = r.randint(1, 3)
-    monsterHp = monsterLvl * r.randint(1, 2)
-    monsterDmg = monsterLvl * 2 - 1
+    monsterLvl = r.randint(1, 4 )
+    monsterHp = monsterLvl * damage * r.randint(1, 2) / 2
+    monsterDmg = monsterLvl * 2 * hp / 3
     monsters = ["Giant Firefly", "Chimera", "Young Ciclop", "Giant Spider", "Lurker"]
     monster = r.choice(monsters)
 
@@ -95,6 +95,8 @@ def meetMonster():
                 break
             else:
                 print("Кажется на завтрак эта тварь съела Усэйн Болта. Ты станешь отличным вторым блюдом...")
+                hp = -1
+                break
 
         else:
             continue
@@ -110,6 +112,76 @@ def meetMonster():
         coins += loot
         print("Ты завалил эту тварь! Заработал немного шекелей -->", loot)
         printCoins()
+
+def meetBandit():
+    global hp
+    global coins
+
+    banditLvl = r.randint(1, 3)
+    banditHp = banditLvl * damage * r.randint(1, 2) / 2
+    banditDmg = banditLvl * 2 * hp / 3
+    bandits = ["Robber", "Forest Bandit", "Asassin", "Looter"]
+    bandit = r.choice(bandits)
+
+    print("""На своём пути ты встретил разбойника...
+    Враг --> {0} {1} уровня, у него {2} здоровья и {3} урона.""".format(bandit, banditLvl, banditHp, banditDmg))
+    printParameters()
+
+    while banditHp > 0:
+        choice = input("""Что решаешь?
+        АТАКА/Тикаем -->""").lower()
+
+        if choice == "атака":
+            banditHp -= damage
+            print("""Отличный удар!
+            У врага осталось""", banditHp, "жизней.")
+        elif choice == "тикаем":
+            chance = r.randint(0, 2)
+            if chance == 0:
+                print("Тебе удалось его оглушить! Ты скрылся в тени... Нужно перевести дух.")
+                break
+            else:
+                print("Он кинул в тебя кинжал, ты упал на землю и враг догнал тебя. Ты казнён.")
+                hp = -1
+                break
+
+        else:
+            continue
+
+        if banditHp > 0:
+            hp -= banditDmg
+            print("Неплохо дерётся для такого отброса! ТЫ пропустил удар! У тебя осталось", hp, "здоровья")
+
+        if hp <= 0:
+            break
+    else:
+        loot = r.randint(0,2) + banditLvl
+        coins += loot
+        print("""Враг повержен. Думаю это ему больше не понадобится.
+        Обыскав его, ты нашёл немного золота -->""", loot)
+        printCoins()
+
+def find_item():
+    global hp
+    global coins
+    global damage
+
+    weaponLvl = r.randint(1, 3)
+    weaponDmg = r.randint(1, 2) * weaponLvl
+    weapons = ["Длинный лук", "Железный меч", "Топор берсерка", "Копье королевского гвардейца"]
+    weaponRarities = ["Старый", "Добротный", "Великолепный"]
+    weaponRarity = weaponRarities[weaponLvl - 1]
+    weapon = r.choice(weapons)
+
+
+    print("""Что это там за деревом?
+Ты подходишь ближе и видишь тело солдата...
+Жалко конечно этого добряка...
+Переведя взгляд в сторону ты видишь, что рядом лежит его оружие. Ему это явно больше не нужно.
+Ты получаешь {0} {1}""".format(weaponRarity, weapon))
+
+    damage = damage + weaponDmg
+    printParameters()
 
 def initGame(initHp, initCoins, initDmg):
     global hp
@@ -130,16 +202,20 @@ def gameLoop():
         meetShop()
     elif situation == 1:
         meetMonster()
+    elif situation == 2:
+        meetBandit()
+    elif situation == 3:
+        find_item()
     else:
         input("Блуждаю...")
 
-initGame(3, 5, 1)
+initGame(6, 5, 2)
 
 while True:
     gameLoop()
 
     if hp <= 0:
         if input("Хочешь начать сначала? (Да/Нет):").lower() == "да":
-            initGame(3, 5, 1)
+            initGame(6, 5, 2)
         else:
             break

@@ -1,11 +1,12 @@
 import random as r
 
+lvl = 0
 hp = 0
 coins = 0
 damage = 0
 
 def printParameters():
-    print("У тебя {0} жизней, {1} монет и {2} урона.".format(hp, coins, damage))
+    print("У тебя {0} уровень, {1} жизней, {2} монет и {3} урона.".format(lvl, hp, coins, damage))
 
 def printHp():
     print(f"У тебя {hp} жизней.")
@@ -64,6 +65,7 @@ def meetShop():
                 printDamage()
         else:
             print("Я такое не продаю.")
+        lvl_define()
         printParameters()
 
 def meetMonster():
@@ -185,6 +187,7 @@ def find_item():
 Ты получаешь {0} {1}""".format(weaponRarity, weapon))
 
     damage = damage + weaponDmg
+    lvl_define()
     printParameters()
 
 def find_altar():
@@ -202,6 +205,7 @@ def find_altar():
         if chance == 0:
             print("""Кажется делать этого не стоило. Что-то поплохело.""")
             hp -= 2
+            printParameters()
         else:
             print("""Видимо это было мощное целебное зелье.
             Ты чувствуешь себя гораздо лучше.""")
@@ -209,19 +213,26 @@ def find_altar():
             printParameters()
 
 
-def initGame(initHp, initCoins, initDmg):
+def initGame(initHp, initCoins, initDmg, initLvl):
     global hp
     global coins
     global damage
+    global lvl
 
     hp = initHp
     coins = initCoins
     damage = initDmg
+    lvl = initLvl
 
     print("Ты отправился в странствие навстречу приключениям и опасностям. Удачного путешествия!")
     printParameters()
 
 #Игровые события
+def lvl_define():
+    global damage, lvl
+    lvl = int(damage**0.5)
+
+
 def gameLoop():
     situation = r.randint(0, 10)
     if situation == 0:
@@ -237,13 +248,13 @@ def gameLoop():
     else:
         input("Блуждаю...")
 
-initGame(6, 5, 2)
+initGame(6, 5, 2, 1)
 
 while True:
     gameLoop()
 
     if hp <= 0:
         if input("Хочешь начать сначала? (Да/Нет):").lower() == "да":
-            initGame(6, 5, 2)
+            initGame(6, 5, 2, 1)
         else:
             break

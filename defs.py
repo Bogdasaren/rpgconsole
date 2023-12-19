@@ -221,6 +221,47 @@ def initGame(initHp, initCoins, initDmg, initLvl):
     print("Ты отправился в странствие навстречу приключениям и опасностям. Удачного путешествия!")
     printParameters()
 
+def trap_event():
+    global hp
+    global coins
+    global damage
+    global lvl
+    
+    print("Вы попали в ловушку!")
+    
+    # Генерация случайного события в ловушке
+    trap_type = r.choice(["damage", "lose_coins",])
+    
+    if trap_type == "damage":
+        damage_amount = 1
+        hp -= damage_amount
+        print(f"Вы потеряли {damage_amount} здоровья. Ваше текущее здоровье: {hp}")
+    
+    elif trap_type == "lose_coins":
+        coins_loss = r.randint(1, 2)
+        coins -= coins_loss
+        print(f"Вы потеряли {coins_loss} монет. У вас осталось {coins} монет")
+    
+    else:
+            print("У вас уже 0 уровень, поэтому ничего не произошло.")
+
+    # Проверка на отрицательное здоровье
+    if hp <= 0:
+        print("Ваши здоровье закончилось. Игра окончена.")
+
+printParameters()
+
+def komar_event():
+    
+    print("Бродя по этому миру вы наткнулись на кота!")
+
+    komar_choice = input('Чтобы погладить, введите "пат-пат"\n ---> ').lower()
+
+    if komar_choice == 'пат-пат':
+        print('Вы погладили Комара и духовно выросли')
+    else:
+        print('Вы ужасный человек.')
+
 #Игровые события
 def lvl_define():
     global damage, lvl
@@ -228,7 +269,7 @@ def lvl_define():
 
 
 def gameLoop():
-    situation = r.randint(0, 10)
+    situation = r.randint(0, 15)
     if situation == 0:
         meetShop()
     elif situation == 1:
@@ -239,6 +280,10 @@ def gameLoop():
         find_item()
     elif situation == 4:
         find_altar()
+    elif situation == 10:
+        trap_event()
+    elif situation == 11:
+        komar_event()
     else:
         input("Блуждаю...")
 

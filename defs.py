@@ -71,9 +71,9 @@ def meetShop():
 def meetMonster():
     global hp, coins, lvl
 
-    monsterLvl = r.randint(1, 4)
-    monsterHp = monsterLvl * r.randint(1, 2)
-    monsterDmg = monsterLvl * 2 - 1
+    monsterLvl = lvl + 1
+    monsterHp = (damage + monsterLvl) * 1.5
+    monsterDmg = monsterHp * 0.5
     monsters = ["Giant Firefly", "Chimera", "Young Ciclop", "Giant Spider", "Lurker"]
     monster = r.choice(monsters)
 
@@ -103,8 +103,12 @@ def meetMonster():
             continue
 
         if monsterHp > 0:
-            hp -= monsterDmg
-            print("А он не промах! Атаковал тебя! Это было больно, у тебя", hp, "здоровья")
+            dodge_chance = r.randint(1, 3)
+            if dodge_chance == 1:
+                print("Отличная реакция!! Уклонился от удара!")
+            else:
+                hp -= monsterDmg
+                print("А он не промах! Атаковал тебя! Это было больно, у тебя", hp, "здоровья")
 
         if hp <= 0:
             break
@@ -118,9 +122,9 @@ def meetMonster():
 def meetBandit():
     global hp, coins, lvl
 
-    banditLvl = r.randint(1, 3)
-    banditHp = banditLvl * r.randint(1, 2)
-    banditDmg = banditLvl * 2 - 1
+    banditLvl = lvl + 1
+    banditHp = (damage + banditLvl) * 1.5
+    banditDmg = banditHp * 0.5
     bandits = ["Robber", "Forest Bandit", "Asassin", "Looter"]
     bandit = r.choice(bandits)
 
@@ -150,8 +154,12 @@ def meetBandit():
             continue
 
         if banditHp > 0:
-            hp -= banditDmg
-            print("Неплохо дерётся для такого отброса! ТЫ пропустил удар! У тебя осталось", hp, "здоровья")
+            dodge_chance = r.randint(1, 3)
+            if dodge_chance == 1:
+                print("Отличная реакция!! Уклонился от удара!")
+            else:
+                hp -= banditDmg
+                print("Неплохо дерётся для такого отброса! ТЫ пропустил удар! У тебя осталось", hp, "здоровья")
 
         if hp <= 0:
             break
@@ -210,7 +218,7 @@ def barricade():
     global hp
 
     choice = input("""Проходя между горами, на вашем пути попадается обвал.
-    Обойти/Перелезть""").lower()
+    Обойти/Перелезть-->""").lower()
     if choice == "обойти":
         anoth_road = r.randint(1, 3)
         if anoth_road == 1:
@@ -232,7 +240,7 @@ def victim():
 
     choice = input("""Вы находите алтарь для жертвоприношений и старинную книгу рядом.
     В книге написано, что это место священно и боги одарят силой каждого кто осмелится пожертвовать собой ради них.
-        Рискнуть/Уйти""").lower()
+        Рискнуть/Уйти-->""").lower()
     if choice == "рискнуть":
         chance = r.randint(1, 3)
         if chance == 1:
@@ -250,7 +258,7 @@ def storm():
     global hp, coins
     choice = input("""Идя по горам вы попадаете в сильную бурю. 
     Вы можете рискнуть и пойти дальше или попытаться найти укрытие.
-    Идти/Прятаться""").lower()
+    Идти/Прятаться-->""").lower()
     if choice == "идти":
         chance = r.randint(1, 3)
         if chance == 1:
@@ -260,7 +268,7 @@ def storm():
             printParameters()
         else:
             print("""Эх... Дурак и ветер... Битва со стихией прошла не в твою пользу.""")
-            hp -= -1
+            hp = -1
     elif choice == "прятаться":
         print("Ты успешно переждал бурю, можно идти дальше")
 
@@ -268,13 +276,13 @@ def wolf_trouble():
     global hp, coins, damage, lvl
     choice = input("""Вы слышите впереди крики и волчий вой. 
     Вы решаете:
-    Помочь/Уйти""").lower()
+    Помочь/Уйти-->""").lower()
     if choice == "помочь":
         print("""Вы бежите на звуки и видите парня и девушку. Перед ними разъярённый волк и труп растерзанный этим волком.
         Вы выхватываете меч и бросаетесь на волка!""")
-        wolfLvl = r.randint(1, 4)
-        wolfHp = wolfLvl * r.randint(1, 2)
-        wolfDmg =wolfLvl * 2 - 1
+        wolfLvl = lvl + 1
+        wolfHp = (damage + wolfLvl) * 1.5
+        wolfDmg = wolfHp * 0.5
         print("""У волка {0} уровень, у него {1} здоровья и {2} урона.""".format( wolfLvl, wolfHp, wolfDmg))
         printParameters()
 
@@ -298,8 +306,12 @@ def wolf_trouble():
                 continue
 
             if wolfHp > 0:
-                hp -= wolfDmg
-                print("А он не промах! Атаковал тебя! Это было больно, у тебя", hp, "здоровья")
+                dodge_chance = r.randint(1, 3)
+                if dodge_chance == 1:
+                    print("Отличная реакция!! Уклонился от удара!")
+                else:
+                    hp -= wolfDmg
+                    print("А он не промах! Атаковал тебя! Это было больно, у тебя", hp, "здоровья")
             if hp <= 0:
                 break
         else:
@@ -318,6 +330,43 @@ def wolf_trouble():
             printParameters()
     else:
         print("Своя шкура дороже.")
+
+def trap_event():
+    global hp
+    global coins
+    global damage
+    global lvl
+
+    print("Вы попали в ловушку!")
+
+    trap_type = r.choice(["damage", "lose_coins", ])
+
+    if trap_type == "damage":
+        damage_amount = 1
+        hp -= damage_amount
+        print(f"Вы потеряли {damage_amount} здоровья. Ваше текущее здоровье: {hp}")
+
+    elif trap_type == "lose_coins":
+        coins_loss = r.randint(1, 2)
+        coins -= coins_loss
+        print(f"Вы потеряли {coins_loss} монет. У вас осталось {coins} монет")
+
+    printParameters()
+
+def komar_event():
+    global hp
+    print("Бродя по этому миру вы наткнулись на кота!")
+
+    komar_choice = input('Чтобы погладить, введите "пат-пат"\n ---> ').lower()
+
+    if komar_choice == 'пат-пат':
+        print('Вы погладили Комара и духовно выросли')
+        inner_growth = r.randint(1, 2)
+        hp += inner_growth
+        print(f"Вы получили {inner_growth} здоровья")
+        printParameters()
+    else:
+        print('Вы ужасный человек.')
 def initGame(initHp, initCoins, initDmg, initLvl):
     global hp, coins, damage, lvl
 
@@ -355,6 +404,10 @@ def gameLoop():
         storm()
     elif situation == 8:
         wolf_trouble()
+    elif situation == 9:
+        trap_event()
+    elif situation == 10:
+        komar_event()
     else:
         input("Блуждаю...")
 
